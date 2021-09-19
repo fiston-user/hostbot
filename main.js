@@ -1,0 +1,26 @@
+const Discord = require("discord.js");
+require("dotenv").config();
+const client = new Discord.Client();
+const mongoose = require("mongoose");
+
+client.commands = new Discord.Collection();
+client.events = new Discord.Collection();
+
+["command-handler", "event-handler"].forEach((handler) => {
+  require(`./handlers/${handler}`)(client, Discord);
+});
+
+mongoose
+  .connect("mongodb+srv://Fiston:Niyonkuru@fiston.rjyxq.mongodb.net/Data", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
+  .then(() => {
+    console.log("connected to the database");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+client.login(process.env.TOKEN);
